@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#111827" />
+    <title>InterviewPulse | Real-Time AI Practice Coach</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="backdrop" aria-hidden="true">
+      <div class="glow glow-one"></div>
+      <div class="glow glow-two"></div>
+    </div>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="InterviewPulse home">
+        <span class="brand-mark">IP</span>
+        <span>
+          <strong>InterviewPulse</strong>
+          <small>AI practice coach</small>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <span class="privacy-pill"><span class="live-dot"></span> Local history only</span>
+        <button class="button ghost" id="new-session-button">New session</button>
+      </div>
+    </header>
+
+    <main class="app-layout">
+      <section class="hero" aria-label="Introduction">
+        <div>
+          <p class="eyebrow">REAL-TIME MOCK INTERVIEW ASSISTANT</p>
+          <h1>Practice clear answers under pressure.</h1>
+          <p class="hero-copy">
+            Capture interview questions, get an answer framework, speak your response,
+            and receive feedback on delivery and technical correctness. Upload a resume
+            or review coding solutions for deeper practice.
+          </p>
+        </div>
+        <div class="ethics-note">
+          <strong>Practice mode</strong>
+          <p>Use during mock interviews or with interviewer consent. Build your own voice, not an undisclosed prompt feed.</p>
+        </div>
+      </section>
+
+      <section class="metric-strip" aria-label="Current session summary">
+        <article class="metric">
+          <span>Practice attempts</span>
+          <strong id="question-count">0</strong>
+        </article>
+        <article class="metric">
+          <span>Interview score</span>
+          <strong id="interview-score">--</strong>
+        </article>
+        <article class="metric">
+          <span>Technical score</span>
+          <strong id="average-technical">--</strong>
+        </article>
+        <article class="metric">
+          <span>Session time</span>
+          <strong id="session-time">00:00</strong>
+        </article>
+      </section>
+
+      <div class="workspace">
+        <section class="panel session-panel">
+          <div class="panel-head">
+            <div>
+              <p class="section-label">LIVE PRACTICE</p>
+              <h2>Interview session</h2>
+            </div>
+            <span class="status-badge" id="session-status">Ready</span>
+          </div>
+
+          <div class="context-grid">
+            <label>
+              Target role
+              <input id="role-input" type="text" placeholder="Product Manager" autocomplete="off" />
+            </label>
+            <label>
+              Interview type
+              <select id="interview-type">
+                <option>Behavioral</option>
+                <option>Technical</option>
+                <option>System Design</option>
+                <option>Leadership</option>
+                <option>HR Screening</option>
+              </select>
+            </label>
+          </div>
+
+          <article class="conversation-block">
+            <div class="block-title">
+              <span class="step-number">1</span>
+              <div>
+                <h3>Listen to a question</h3>
+                <p>Use your microphone or type a practice question.</p>
+              </div>
+            </div>
+            <textarea id="question-input" rows="3" placeholder="Example: Tell me about a time you handled a difficult stakeholder."></textarea>
+            <div class="control-row">
+              <button class="button microphone" id="listen-question-button">
+                <span class="mic-icon"></span>
+                <span id="listen-label">Listen for question</span>
+              </button>
+              <button class="button primary" id="generate-button">Generate answer guide</button>
+            </div>
+            <p class="transcript-hint" id="question-interim" aria-live="polite"></p>
+          </article>
+
+          <article class="conversation-block answer-block" id="answer-block">
+            <div class="block-title">
+              <span class="step-number accent">2</span>
+              <div>
+                <h3>AI answer guide</h3>
+                <p>A structured draft to study before you answer.</p>
+              </div>
+            </div>
+            <div class="answer-placeholder" id="answer-output">
+              Your suggested answer will appear here after a question is captured.
+            </div>
+            <div class="control-row answer-controls">
+              <button class="button secondary" id="speak-answer-button" disabled>
+                <span class="speaker-icon"></span> Speak guide
+              </button>
+              <button class="button ghost" id="stop-speaking-button" disabled>Stop</button>
+            </div>
+          </article>
+
+          <article class="conversation-block">
+            <div class="block-title">
+              <span class="step-number">3</span>
+              <div>
+                <h3>Record your answer</h3>
+                <p>Deliver it in your own words for coaching feedback.</p>
+              </div>
+            </div>
+            <textarea id="response-input" rows="4" placeholder="Your spoken response transcript will appear here. You can edit it before analysis."></textarea>
+            <div class="control-row">
+              <button class="button microphone practice" id="record-response-button">
+                <span class="mic-icon"></span>
+                <span id="record-label">Record my response</span>
+              </button>
+              <button class="button primary" id="analyze-button">Analyze response</button>
+            </div>
+            <p class="transcript-hint" id="response-interim" aria-live="polite"></p>
+          </article>
+        </section>
+
+        <aside class="side-stack">
+          <section class="panel coaching-panel">
+            <div class="panel-head compact">
+              <div>
+                <p class="section-label">COACHING</p>
+                <h2>Performance insights</h2>
+              </div>
+            </div>
+            <div class="empty-insights" id="empty-insights">
+              Complete one spoken answer to see personalized scores and next steps.
+            </div>
+            <div class="insights hidden" id="insights">
+              <div class="score-cards">
+                <article>
+                  <span>Confidence</span>
+                  <strong id="confidence-score">0</strong>
+                  <div class="progress"><i id="confidence-bar"></i></div>
+                </article>
+                <article>
+                  <span>Grammar</span>
+                  <strong id="grammar-score">0</strong>
+                  <div class="progress"><i id="grammar-bar"></i></div>
+                </article>
+                <article>
+                  <span>Communication</span>
+                  <strong id="communication-score">0</strong>
+                  <div class="progress"><i id="communication-bar"></i></div>
+                </article>
+                <article>
+                  <span>Technical</span>
+                  <strong id="technical-score">0</strong>
+                  <div class="progress"><i id="technical-bar"></i></div>
+                </article>
+              </div>
+              <div class="delivery-row">
+                <span><strong id="words-count">0</strong> words</span>
+                <span><strong id="pace-score">--</strong> WPM</span>
+                <span><strong id="filler-count">0</strong> fillers</span>
+              </div>
+              <div class="feedback-box">
+                <h3>What worked</h3>
+                <ul id="strength-list"></ul>
+                <h3>Improve next</h3>
+                <ul id="improvement-list"></ul>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel history-panel">
+            <div class="panel-head compact">
+              <div>
+                <p class="section-label">HISTORY</p>
+                <h2>Recent practice</h2>
+              </div>
+              <button class="text-button" id="clear-history-button">Clear</button>
+            </div>
+            <div id="history-list" class="history-list">
+              <p class="empty-history">No sessions saved yet.</p>
+            </div>
+            <div class="weak-topics">
+              <h3>Weak topics to revisit</h3>
+              <div id="weak-topic-list" class="topic-chips">
+                <span class="muted-chip">Complete an analysis to identify topics.</span>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </div>
+
+      <section class="feature-grid" aria-label="Advanced practice tools">
+        <section class="panel resume-panel">
+          <div class="panel-head compact">
+            <div>
+              <p class="section-label">RESUME MODE</p>
+              <h2>Personalized questions</h2>
+            </div>
+          </div>
+          <p class="feature-copy">Upload your resume PDF and Ollama will create targeted questions based on your projects and skills. The PDF is processed locally and not saved.</p>
+          <label class="file-drop" for="resume-file">
+            <span id="resume-file-label">Choose resume PDF</span>
+            <small>PDF, up to 5 MB</small>
+            <input id="resume-file" type="file" accept="application/pdf,.pdf" />
+          </label>
+          <button class="button primary wide" id="resume-questions-button">Generate resume questions</button>
+          <div id="resume-questions-output" class="generated-list hidden"></div>
+        </section>
+
+        <section class="panel coding-panel">
+          <div class="panel-head compact">
+            <div>
+              <p class="section-label">CODING ROUND</p>
+              <h2>Solution reviewer</h2>
+            </div>
+            <span class="score-pill hidden" id="code-score"></span>
+          </div>
+          <div class="code-context">
+            <label>
+              Language
+              <select id="code-language">
+                <option>JavaScript</option>
+                <option>Python</option>
+                <option>Java</option>
+                <option>C++</option>
+                <option>TypeScript</option>
+                <option>SQL</option>
+              </select>
+            </label>
+            <label>
+              Challenge
+              <input id="code-problem" type="text" placeholder="Example: Return two array indices that sum to target" />
+            </label>
+          </div>
+          <textarea id="code-input" class="code-editor" rows="9" placeholder="// Paste your coding-round solution here"></textarea>
+          <button class="button primary" id="review-code-button">Review code</button>
+          <div id="code-review-output" class="code-review hidden">
+            <p id="code-summary"></p>
+            <div class="complexity-row">
+              <span>Time <strong id="time-complexity">--</strong></span>
+              <span>Space <strong id="space-complexity">--</strong></span>
+            </div>
+            <div class="review-columns">
+              <div>
+                <h3>Errors / risks</h3>
+                <ul id="code-errors"></ul>
+              </div>
+              <div>
+                <h3>Optimization</h3>
+                <ul id="code-optimizations"></ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
