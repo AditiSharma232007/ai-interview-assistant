@@ -25,7 +25,6 @@ npm install
 npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in Chrome or Edge for microphone recognition support.
 
 ## Ollama AI Responses
 
@@ -83,3 +82,5 @@ server.mjs         Static server, Ollama routes, PDF extraction, fallback scorin
 ```powershell
 npm run check
 ```
+## Website 
+https://ai-interview-assistant-96ru.onrender.com/
